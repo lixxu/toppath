@@ -4,12 +4,13 @@ authors = [{ name = "Lix Xu", email = "xuzenglin@gmail.com" }]
 description = "a package on top of pathlib and path to use path easily"
 readme = "README.md"
 requires-python = ">=3.10"
-license = { file = "LICENSE.txt" }
+license-files = ["LICENSE.txt"]
 keywords = ["path", "toppath", "pathlib"]
 classifiers = [
-    "Programming Language :: Python :: 3",
-    "License :: OSI Approved :: BSD License",
+    "Intended Audience :: Developers",
     "Operating System :: OS Independent",
+    "Programming Language :: Python :: 3",
+    "Development Status :: 5 - Production/Stable",
 ]
 dependencies = ["path"]
 dynamic = ["version"]
