@@ -4,10 +4,10 @@
 import pathlib
 from typing import Any
 
-from path import Path as pathPath
+from path import Path as BasePath
 
 
-class Path(pathPath):
+class Path(BasePath):
     def __init__(self, *args: Any, **kwargs: Any) -> None:
         super().__init__(*args, **kwargs)
 
@@ -50,34 +50,40 @@ class Path(pathPath):
     def is_mount(self) -> bool:
         return self.ismount()
 
-    def is_same_as(self, other: Any) -> bool:
+    def is_same_path(self, other: Any) -> bool:
+        return self.samefile(other)
+
+    def is_same_content(self, other: Any) -> bool:
         """check file content if same or not"""
         try:
-            if self.samefile(other):
-                return True
-
-            return self.read_hexhash("sha256") == self.__class__(other).read_hexhash("sha256")
+            return self.read_hexhash("sha256") == BasePath(other).read_hexhash("sha256")
         except Exception:
             return False
+
+    def is_same(self, other: Any) -> bool:
+        return self.is_same_content(other)
 
     def abspath(self) -> Any:
         return self.absolute()
 
-    def set_encoding_stuff(self, kwargs: dict) -> None:
+    def set_io_options(self, kwargs: dict) -> None:
         kwargs.setdefault("encoding", "utf-8")
         kwargs.setdefault("errors", "ignore")
 
+    def read_text(self, *args: Any, **kwargs: Any) -> str:
+        self.set_io_options(kwargs)
+        return super().read_text(*args, **kwargs)
+
     def read_lines(self, *args: Any, **kwargs: Any) -> list:
-        self.set_encoding_stuff(kwargs)
+        self.set_io_options(kwargs)
         kwargs.setdefault("retain", False)
-        return self.lines(*args, **kwargs)
+        return super().lines(*args, **kwargs)
 
     def write_lines(self, lines: list, *args: Any, **kwargs: Any) -> None:
-        self.set_encoding_stuff(kwargs)
-        kwargs.setdefault("linesep", None)
-        return self.write_lines(lines, *args, **kwargs)
+        self.set_io_options(kwargs)
+        return super().write_lines(lines, *args, **kwargs)
 
     def write_text(self, text: str, *args: Any, **kwargs: Any) -> None:
-        self.set_encoding_stuff(kwargs)
+        self.set_io_options(kwargs)
         kwargs.setdefault("linesep", None)
-        return self.write_text(text, *args, **kwargs)
+        return super().write_text(text, *args, **kwargs)
